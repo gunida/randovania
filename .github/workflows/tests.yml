@@ -7,7 +7,7 @@ on:
       - main
       - stable
     tags:
-      - 'v*.*.*'
+      - "v*.*.*"
 
 jobs:
   pytest:
@@ -15,40 +15,40 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: 'ubuntu-latest'
-            python: '3.11'
+          - os: "ubuntu-latest"
+            python: "3.10"
             executable: false
-            name: 'Linux'
+            name: "Linux"
 
-          - os: 'ubuntu-latest'
-            python: '3.11'
+          - os: "ubuntu-latest"
+            python: "3.10"
             executable: true
-            name: 'Linux Executable'
+            name: "Linux Executable"
 
-          - os: 'macos-latest'
-            python: '3.11'
+          - os: "macos-latest"
+            python: "3.10"
             executable: false
-            name: 'macOS'
+            name: "macOS"
 
-          - os: 'macos-latest'
-            python: '3.11'
+          - os: "macos-latest"
+            python: "3.10"
             executable: true
-            name: 'macOS Executable'
+            name: "macOS Executable"
 
-          - os: 'windows-latest'
-            python: '3.11'
+          - os: "windows-latest"
+            python: "3.10"
             executable: false
-            name: 'Windows'
+            name: "Windows"
 
-          - os: 'windows-latest'
-            python: '3.11'
+          - os: "windows-latest"
+            python: "3.10"
             executable: true
-            name: 'Windows Executable'
+            name: "Windows Executable"
 
-          - os: 'windows-latest'
-            python: '3.11'
+          - os: "windows-latest"
+            python: "3.10"
             executable: false
-            name: 'Resolver'
+            name: "Resolver"
 
     runs-on: ${{ matrix.os }}
 
@@ -135,7 +135,7 @@ jobs:
         uses: codecov/codecov-action@v3
         if: ${{ !matrix.executable }}
         with:
-          fail_ci_if_error: false  # Ideally this would be true, but codecov's action keep getting errors with GH api and it doesn't do retries
+          fail_ci_if_error: false # Ideally this would be true, but codecov's action keep getting errors with GH api and it doesn't do retries
           files: ./coverage.xml
 
       - name: Upload artifacts
@@ -202,9 +202,9 @@ jobs:
       - name: Deploy Advanced Installer
         uses: caphyon/advinst-github-action@v1.0
         with:
-          advinst-version: '19.8.1'
+          advinst-version: "19.8.1"
           advinst-license: ${{ secrets.ADVANCED_INSTALLER_LICENSE }}
-          advinst-enable-automation: 'true'
+          advinst-enable-automation: "true"
 
       - name: Make changes for dev installer
         shell: pwsh
@@ -221,7 +221,7 @@ jobs:
           $productDetails.UpgradeCode.UpgradeCode = "{7583BC7E-D9ED-4428-A9AD-AE60AE48D4A2}";
           # Use dev name
           $productDetails.Name = "Randovania Dev";
-          
+
           # Save the changes
           $project.Save();
 
@@ -234,11 +234,11 @@ jobs:
           $advinst = new-object -com advancedinstaller;
           $project = $advinst.LoadProject($aipPath);
           $productDetails = $project.ProductDetails;
-          
+
           # Bump the ProductVersion
           $productDetails.Version = "${{ steps.version.outputs.version }}";
           Write-Host "Version: $productDetails.Version";
-          
+
           # Build the project
           $project.Build();
 
@@ -251,7 +251,7 @@ jobs:
             dist/Randovania*Installer.exe
 
   lint:
-    runs-on: 'windows-latest'
+    runs-on: "windows-latest"
 
     steps:
       - name: Checkout
@@ -262,7 +262,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: "3.10"
 
       - name: Get pip cache dir
         id: pip-cache
@@ -289,10 +289,9 @@ jobs:
           set -e
           python tools/update_requirements.py --quiet
           git diff --exit-code
-          
 
   release:
-    runs-on: 'ubuntu-latest'
+    runs-on: "ubuntu-latest"
     name: Github Release
     needs:
       - pytest
@@ -326,7 +325,7 @@ jobs:
           projects: randovania-client randovania-bot randovania-server
 
   discord_alert:
-    runs-on: 'ubuntu-latest'
+    runs-on: "ubuntu-latest"
     name: Discord Alert
     needs:
       - pytest
@@ -342,7 +341,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: "3.10"
 
       - name: Download the executables
         uses: actions/download-artifact@v3
