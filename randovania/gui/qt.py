@@ -330,7 +330,7 @@ def run(args):
     import randovania.monitoring
     randovania.monitoring.client_init()
 
-    locale.setlocale(locale.LC_ALL, "")  # use system's default locale
+    locale.setlocale(locale.LC_ALL, "en-US")  # use en-US by default
     QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
 
     data_dir = args.custom_network_storage
