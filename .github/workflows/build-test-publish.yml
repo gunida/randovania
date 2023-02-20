@@ -7,7 +7,7 @@ on:
       - main
       - stable
     tags:
-      - 'v*.*.*'
+      - "v*.*.*"
 
 jobs:
   pytest:
@@ -15,40 +15,40 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: 'ubuntu-latest'
-            python: '3.11'
+          - os: "ubuntu-latest"
+            python: "3.10"
             executable: false
-            name: 'Linux'
+            name: "Linux"
 
-          - os: 'ubuntu-latest'
-            python: '3.11'
+          - os: "ubuntu-latest"
+            python: "3.10"
             executable: true
-            name: 'Linux Executable'
+            name: "Linux Executable"
 
-          - os: 'macos-latest'
-            python: '3.11'
+          - os: "macos-latest"
+            python: "3.10"
             executable: false
-            name: 'macOS'
+            name: "macOS"
 
-          - os: 'macos-latest'
-            python: '3.11'
+          - os: "macos-latest"
+            python: "3.10"
             executable: true
-            name: 'macOS Executable'
+            name: "macOS Executable"
 
-          - os: 'windows-latest'
-            python: '3.11'
+          - os: "windows-latest"
+            python: "3.10"
             executable: false
-            name: 'Windows'
+            name: "Windows"
 
-          - os: 'windows-latest'
-            python: '3.11'
+          - os: "windows-latest"
+            python: "3.10"
             executable: true
-            name: 'Windows Executable'
+            name: "Windows Executable"
 
-          - os: 'windows-latest'
-            python: '3.11'
+          - os: "windows-latest"
+            python: "3.10"
             executable: false
-            name: 'Resolver'
+            name: "Resolver"
 
     runs-on: ${{ matrix.os }}
 
@@ -135,7 +135,7 @@ jobs:
         uses: codecov/codecov-action@v3
         if: ${{ !matrix.executable }}
         with:
-          fail_ci_if_error: false  # Ideally this would be true, but codecov's action keep getting errors with GH api and it doesn't do retries
+          fail_ci_if_error: false # Ideally this would be true, but codecov's action keep getting errors with GH api and it doesn't do retries
           files: ./coverage.xml
 
       - name: Upload artifacts
@@ -202,9 +202,9 @@ jobs:
       - name: Deploy Advanced Installer
         uses: caphyon/advinst-github-action@v1.0
         with:
-          advinst-version: '19.8.1'
+          advinst-version: "19.8.1"
           advinst-license: ${{ secrets.ADVANCED_INSTALLER_LICENSE }}
-          advinst-enable-automation: 'true'
+          advinst-enable-automation: "true"
 
       - name: Make changes for dev installer
         shell: pwsh
@@ -221,7 +221,7 @@ jobs:
           $productDetails.UpgradeCode.UpgradeCode = "{7583BC7E-D9ED-4428-A9AD-AE60AE48D4A2}";
           # Use dev name
           $productDetails.Name = "Randovania Dev";
-          
+
           # Save the changes
           $project.Save();
 
@@ -234,11 +234,11 @@ jobs:
           $advinst = new-object -com advancedinstaller;
           $project = $advinst.LoadProject($aipPath);
           $productDetails = $project.ProductDetails;
-          
+
           # Bump the ProductVersion
           $productDetails.Version = "${{ steps.version.outputs.version }}";
           Write-Host "Version: $productDetails.Version";
-          
+
           # Build the project
           $project.Build();
 
@@ -263,7 +263,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.11"
+          python-version: "3.10"
 
       - name: Download the executable
         uses: actions/download-artifact@v3
@@ -283,16 +283,16 @@ jobs:
         shell: bash
         run: python ./tools/build_flatpak.py --repository ./flatpak-repo packages/*.tar.gz
 
-#      - name: Upload flatpak
-#        uses: actions/upload-artifact@v3
-#        with:
-#          name: Randovania Linux Flatpak
-#          if-no-files-found: error
-#          path: |
-#            flatpak-repo/
+  #      - name: Upload flatpak
+  #        uses: actions/upload-artifact@v3
+  #        with:
+  #          name: Randovania Linux Flatpak
+  #          if-no-files-found: error
+  #          path: |
+  #            flatpak-repo/
 
   lint:
-    runs-on: 'windows-latest'
+    runs-on: "windows-latest"
 
     steps:
       - name: Checkout
@@ -303,7 +303,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: "3.10"
 
       - name: Get pip cache dir
         id: pip-cache
@@ -335,14 +335,12 @@ jobs:
     runs-on: ubuntu-latest
     name: Docker
     steps:
-      -
-        name: Checkout
+      - name: Checkout
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
-      -
-        name: Prepare
+      - name: Prepare
         id: prep
         run: |
           DOCKER_IMAGE=randovania/server
@@ -371,24 +369,20 @@ jobs:
           echo tags=${TAGS} >> $GITHUB_OUTPUT
           echo created=$(date -u +'%Y-%m-%dT%H:%M:%SZ') >> $GITHUB_OUTPUT
 
-      -
-        name: Set up QEMU
+      - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
 
-      -
-        name: Set up Docker Buildx
+      - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2.4.1
 
-      -
-        name: Login to DockerHub
+      - name: Login to DockerHub
         if: github.event_name != 'pull_request'
         uses: docker/login-action@v2.1.0
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      -
-        name: Build and push
+      - name: Build and push
         id: docker_build
         uses: docker/build-push-action@v4.0.0
         with:
@@ -405,13 +399,12 @@ jobs:
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.licenses=${{ github.event.repository.license.name }}
 
-      -
-        name: Test image
+      - name: Test image
         run: |
-          docker run --rm --entrypoint /bin/bash randovania/server:${{ steps.prep.outputs.version }} tools/server_image_test.sh 
+          docker run --rm --entrypoint /bin/bash randovania/server:${{ steps.prep.outputs.version }} tools/server_image_test.sh
 
   release:
-    runs-on: 'ubuntu-latest'
+    runs-on: "ubuntu-latest"
     name: Release
     needs:
       - pytest
@@ -428,7 +421,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: "3.10"
 
       - name: Download the executables
         uses: actions/download-artifact@v3
@@ -470,7 +463,7 @@ jobs:
           body: "Release executable"
 
       - name: Discord Notifications
-        run: python tools/post_discord_webhook.py --artifact-dir "packages/Randovania Linux Executable/" 
+        run: python tools/post_discord_webhook.py --artifact-dir "packages/Randovania Linux Executable/"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
